@@ -8,37 +8,35 @@ import Community from './Community'
 import Dining from './Dining'
 import DiningServices from './DiningServices'
 import Package from './Package'
-
-export default class App extends React.Component {
-  render() {
-    return (
-      <AppDrawerNavigator />
-    );
-  }
-}
-const navigationOptions = function(props) {
-  return {
-    headerLeft: <Button onPress={() => props.navigation.navigate('DrawerOpen')} title= "=" />
-  }
-};
-const AppDrawerNavigator = createDrawerNavigator({
-  Login: Login,
+import { createStackNavigator } from 'react-navigation'
+import { StackNavigator } from 'react-navigation'
+const DrawerStack = createDrawerNavigator({
   Home: HomeScreen,
   "Dining Menus": Dining,
   "Dining Services": DiningServices,
   Community: Community,
   "Package Check": Package,
   Settings: Settings
-  
+})
+const DrawerNavigation = createStackNavigator({
+  DrawerStack: { screen: DrawerStack }
+}, {
+  headerMode: 'float',
+  navigationOptions: ({navigation}) => ({
+    headerStyle: {backgroundColor: 'orange'},
+    title: 'Gettysburg Mobile',
+    headerLeft: <Text onPress={() => navigation.openDrawer()}>Menu</Text>
+  })
+})
+// Manifest of possible screens
+const DefaultNavStack = createStackNavigator({
+  LoginScreen: { screen: Login },
+  DrawerStack: { screen: DrawerNavigation }
+}, {
+  // Default config for all screens
+  headerMode: 'none',
+  title: 'Main',
+  initialRouteName: 'LoginScreen'
 })
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'blue',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-})
-
-
+export default DefaultNavStack;
