@@ -36,7 +36,10 @@ const DefaultNavStack = createStackNavigator({
   // Default config for all screens
   headerMode: 'none',
   title: 'Main',
-  initialRouteName: 'LoginScreen'
+  initialRouteName: 'LoginScreen',
+  navigationOptions: {
+      gesturesEnabled: false
+  }
 })
 
 export default DefaultNavStack;
