@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, StyleSheet} from 'react-native';
+import {View, AsyncStorage, TouchableOpacity, Text, TextInput, StyleSheet} from 'react-native';
 
 import { Event, Icon, Button, Container, Header, Content, Left} from 'native-base';
 
@@ -12,6 +12,7 @@ export default class Package extends Component {
     }
 
     checkIfHasPackage(studentID) {
+      console.log('https://api.cloudmine.me/v1/app/6c7bfc297efc4ab294bbf22ed23c7701/run/SearchGettysburgPackages?studentid='+studentID);
       return fetch('https://api.cloudmine.me/v1/app/6c7bfc297efc4ab294bbf22ed23c7701/run/SearchGettysburgPackages?studentid='+studentID, {
         method: 'GET',
         headers: {
@@ -39,24 +40,46 @@ export default class Package extends Component {
     }
 
     handleChange(event) {
-      var ID = event.nativeEvent.text;
-      //If text is the length of an ID
-      if(ID.length == 7){
-        this.checkIfHasPackage(ID);
+      console.log("pressed");
+      this.retrieveItem("userId").then((userId) => {
+                this.checkIfHasPackage(userId);
+              }).catch((error) => {
+              //this callback is executed when your Promise is rejected
+              console.log('Promise is rejected with error: ' + error);
+              }); 
+    }
+    async retrieveItem(key) {
+      try {
+        const retrievedItem =  await AsyncStorage.getItem(key);
+        const item = JSON.parse(retrievedItem);
+        return item;
+      } catch (error) {
+        console.log(error.message);
+      }
+      return
+    }
+    async storeItem(key, item) {
+      try {
+          //we want to wait for the Promise returned by AsyncStorage.setItem()
+          //to be resolved to the actual value before returning the value
+          var jsonOfItem = await AsyncStorage.setItem(key, JSON.stringify(item));
+          return jsonOfItem;
+      } catch (error) {
+        console.log(error.message);
       }
     }
-
     render() {
         return (
             <View style = {styles.container}>
               <Text>
                 {this.state.text}
               </Text>
-              <TextInput
-                style={{height: 50, width:200}}
-                placeholder="Enter Student ID here."
-                onChange={this.handleChange}
-              />
+              <TouchableOpacity 
+                  style = {styles.buttonContainer} 
+                  onPress={this.handleChange}
+                >
+                    <Text style = {styles.buttonText}>Check For Packages</Text>
+                </TouchableOpacity>
              </View>
         );
     }
@@ -67,5 +90,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'yellow',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    buttonContainer: {
+        backgroundColor:'#2980b9',
+        paddingVertical: 15
+    },
+    buttonText: {
+        textAlign: 'center',
+        color: '#FFFFFF',
+        fontWeight: '700'
     }
 });
