@@ -29,7 +29,7 @@ class LoginForm extends Component {
       var username = this.state.username
       var password = this.state.password
       if(username=="admin" && password=="admin"){
-        //this.props.navigator('DrawerStack')
+        this.props.navigation.navigate('DrawerStack')
         console.log("yep");
       }
     }
@@ -52,7 +52,7 @@ class LoginForm extends Component {
                 />
                 <TouchableOpacity 
                   style = {styles.buttonContainer} 
-                  onPress={() => navigate('DrawerStack')}
+                  onPress={this.handleLogin}
                 >
                     <Text style = {styles.buttonText}>Login</Text>
                 </TouchableOpacity>
