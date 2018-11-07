@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, View, TextInput, TouchableOpacity, Text, Alert} from 'react-native';
 import { createStackNavigator } from 'react-navigation'; 
 import { withNavigation } from 'react-navigation';
-
+import { AsyncStorage } from "react-native"
 import HomeScreen from '../HomeScreen'
 
 class LoginForm extends Component {
@@ -30,7 +30,30 @@ class LoginForm extends Component {
       var password = this.state.password
       if(username=="admin" && password=="admin"){
         this.props.navigation.navigate('DrawerStack')
-        console.log("yep");
+        //get studentID from DB
+        var userId = "5779354";
+        this.storeItem("userId", userId);
+      }
+    }
+    //the functionality of the retrieveItem is shown below
+    async retrieveItem(key) {
+      try {
+        const retrievedItem =  await AsyncStorage.getItem(key);
+        const item = JSON.parse(retrievedItem);
+        return item;
+      } catch (error) {
+        console.log(error.message);
+      }
+      return
+    }
+    async storeItem(key, item) {
+      try {
+          //we want to wait for the Promise returned by AsyncStorage.setItem()
+          //to be resolved to the actual value before returning the value
+          var jsonOfItem = await AsyncStorage.setItem(key, JSON.stringify(item));
+          return jsonOfItem;
+      } catch (error) {
+        console.log(error.message);
       }
     }
     render() {
