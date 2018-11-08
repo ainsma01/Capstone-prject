@@ -11,7 +11,7 @@ import {
   ListView,
   TouchableOpacity
 } from 'react-native';
-
+import CommunityEvents from './CommunityEvents';
 export default class Community extends Component {
 
   constructor(props) {
@@ -29,39 +29,39 @@ export default class Community extends Component {
         {day:8, month: 'Jan'},
         {day:9, month: 'May'},
       ]),
+      eventData:[]
     };
+    this.getData = this.getData.bind(this);
   }
 
   eventClickListener = (viewId) => {
     Alert.alert("alert", "event clicked");
   }
+  getData(){
+    console.log("test");
+      return fetch('https://25livepub.collegenet.com/calendars/gbc-all-events-shell.json')
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log("test2");
+      console.log(responseJson);
+      this.setState({eventData: responseJson});
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <ListView enableEmptySections={true}
-          style={styles.eventList}
-          dataSource={this.state.dataSource}
-          renderRow={(event) => {
-            return (
-              <TouchableOpacity onPress={() => this.eventClickListener("row")}>
-                <View style={styles.eventBox}>
-                  <View style={styles.eventDate}>
-                     <Text  style={styles.eventDay}>{event.day}</Text>
-                     <Text  style={styles.eventMonth}>{event.month}</Text>
-                  </View>
-                  <View style={styles.eventContent}>
-                    <Text  style={styles.eventTime}>11:00 am - 12:00 pm</Text>
-                    <Text  style={styles.userName}>Computer Science Colloquium </Text>
-                    <Text  style={styles.description}>Come listen to smart people talk about computer science and stuff</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )
-          }}/>
-      </View>
-    );
   }
+
+  componentDidMount() {
+
+      this.getData();
+  }
+  render() {
+        return (
+        <CommunityEvents data = {this.state.eventData}/>
+        );
+  }
+
 }
 
 const styles = StyleSheet.create({
