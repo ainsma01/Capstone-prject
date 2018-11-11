@@ -9,106 +9,61 @@ import {
   Alert,
   Image,
   ListView,
+  Picker,
   TouchableOpacity
 } from 'react-native';
-
+import CommunityEvents from './CommunityEvents';
 export default class Community extends Component {
 
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds.cloneWithRows([
-        {day:1, month: 'Sep'}, 
-        {day:2, month: 'Jan'}, 
-        {day:3, month: 'Aug'}, 
-        {day:4, month: 'Dec'}, 
-        {day:5, month: 'Jul'}, 
-        {day:6, month: 'Oct'}, 
-        {day:7, month: 'Sep'},
-        {day:8, month: 'Jan'},
-        {day:9, month: 'May'},
-      ]),
+      eventData:[],
+      chosenValue: "all",
+      filter:["all", "academic", "athletics", "social"],
+      apiLinks:['https://25livepub.collegenet.com/calendars/gbc-all-events-shell.json', 'https://25livepub.collegenet.com/calendars/gbc-all-events-shell.json?mixin=7208%2c19644%2c7015', 'https://25livepub.collegenet.com/calendars/gbc-all-events-shell.json?mixin=7216%2c7217%2c7015', 'https://25livepub.collegenet.com/calendars/gbc-all-events-shell.json?mixin=7266%2c7015']
     };
+    this.getData = this.getData.bind(this);
+    this.renderNewEvents = this.renderNewEvents.bind(this);
   }
-
-  eventClickListener = (viewId) => {
-    Alert.alert("alert", "event clicked");
+  getData(eventType){
+    console.log(eventType);
+    var i = this.state.filter.indexOf(eventType);
+    console.log(i);
+      return fetch(this.state.apiLinks[i])
+    .then((response) => response.json())
+    .then((responseJson) => {
+      this.setState({eventData: responseJson});
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
-
+  renderNewEvents(eventType){
+    this.setState({chosenValue: eventType})
+    this.getData(eventType);
+  }
+  componentDidMount() {
+      this.getData("all");
+  }
   render() {
-    return (
-      <View style={styles.container}>
-        <ListView enableEmptySections={true}
-          style={styles.eventList}
-          dataSource={this.state.dataSource}
-          renderRow={(event) => {
-            return (
-              <TouchableOpacity onPress={() => this.eventClickListener("row")}>
-                <View style={styles.eventBox}>
-                  <View style={styles.eventDate}>
-                     <Text  style={styles.eventDay}>{event.day}</Text>
-                     <Text  style={styles.eventMonth}>{event.month}</Text>
-                  </View>
-                  <View style={styles.eventContent}>
-                    <Text  style={styles.eventTime}>11:00 am - 12:00 pm</Text>
-                    <Text  style={styles.userName}>Computer Science Colloquium </Text>
-                    <Text  style={styles.description}>Come listen to smart people talk about computer science and stuff</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )
-          }}/>
-      </View>
-    );
+        return (
+          <View>
+          <View>
+          <Picker
+            selectedValue={this.state.chosenValue}
+            //style={{ height: 50, width: 100 }}
+            onValueChange={(itemValue, itemIndex) => this.renderNewEvents(itemValue)}>
+            <Picker.Item label="All Events" value="all" />
+            <Picker.Item label="Athletic Events" value="athletics" />
+            <Picker.Item label="Academic Events" value="academic" />
+            <Picker.Item label="Social Events" value="social" />
+          </Picker>
+          </View>
+          <CommunityEvents data = {this.state.eventData}/>
+          </View>
+        );
   }
-}
 
-const styles = StyleSheet.create({
-  container:{
-    backgroundColor: "#3498db",
-  },
-  eventList:{
-    marginTop:20,
-  },
-  eventBox: {
-    padding:10,
-    marginTop:5,
-    marginBottom:5,
-    flexDirection: 'row',
-  },
-  eventDate:{
-    flexDirection: 'column',
-  },
-  eventDay:{
-    fontSize:50,
-    color: "orange",
-    fontWeight: "600",
-  },
-  eventMonth:{
-    fontSize:16,
-    color: "orange",
-    fontWeight: "600",
-  },
-  eventContent: {
-    flex:1,
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginLeft:10,
-    backgroundColor: '#FFFFFF',
-    padding:10,
-    borderRadius:10
-  },
-  description:{
-    fontSize:15,
-    color: "#646464",
-  },
-  eventTime:{
-    fontSize:18,
-    color:"#151515",
-  },
-  userName:{
-    fontSize:16,
-    color:"#151515",
-  },
-});
+}
