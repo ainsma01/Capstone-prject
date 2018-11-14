@@ -1,0 +1,20 @@
+
+import React, { Component } from 'react'
+import { View, WebView, StyleSheet } from 'react-native'
+const ShuttleServices = () => {
+   return (
+      <View style = {styles.container}>
+         <WebView
+         source = {{ uri:
+         'https://www.gettysburg.edu/current_students/myShuttle/' }}
+         />
+      </View>
+   )
+}
+export default ShuttleServices;
+
+const styles = StyleSheet.create({
+   container: {
+      height: 700
+   }
+})
