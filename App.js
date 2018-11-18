@@ -8,6 +8,8 @@ import Community from './Community'
 import Dining from './Dining'
 import Email from './Email'
 import DiningServices from './DiningServices'
+import Moodle from './Moodle'
+import StudentCenter from './StudentCenter'
 import Package from './Package'
 import { createStackNavigator } from 'react-navigation'
 import { StackNavigator } from 'react-navigation'
@@ -16,6 +18,8 @@ const DrawerStack = createDrawerNavigator({
   "Dining Menus": Dining,
   "Dining Services": DiningServices,
   "Gettysburg Email": Email,
+  "Moodle": Moodle,
+  "Student Center": StudentCenter,
   Community: Community,
   "Package Check": Package,
   Settings: Settings
