@@ -4,6 +4,7 @@ import Login from './components/Login';
 import {createDrawerNavigator} from 'react-navigation'
 import HomeScreen from './HomeScreen'
 import Settings from './Settings'
+import CNAV from './CNAV'
 import Community from './Community'
 import Dining from './Dining'
 import Email from './Email'
@@ -15,6 +16,7 @@ import { createStackNavigator } from 'react-navigation'
 import { StackNavigator } from 'react-navigation'
 const DrawerStack = createDrawerNavigator({
   Home: HomeScreen,
+  "CNAV": CNAV,
   "Dining Menus": Dining,
   "Dining Services": DiningServices,
   "Gettysburg Email": Email,
